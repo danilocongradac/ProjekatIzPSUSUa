@@ -1,0 +1,6 @@
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\bin\Debug\DataConcentrator.dll
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\bin\Debug\DataConcentrator.pdb
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\obj\Debug\DataConcentrator.csproj.AssemblyReference.cache
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\obj\Debug\DataConcentrator.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\obj\Debug\DataConcentrator.dll
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\obj\Debug\DataConcentrator.pdb
