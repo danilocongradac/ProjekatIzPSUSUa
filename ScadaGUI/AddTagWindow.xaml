@@ -1,0 +1,82 @@
+﻿<Window x:Class="ScadaGUI.AddTagWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add Tag" Height="600" Width="500">
+
+    <DockPanel LastChildFill="True" Margin="0">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10" >
+            <Button Content="Add" Width="200" Margin="10,0" Click="btnAdd_Click"/>
+            <Button Content="Exit" Width="200" Margin="10,0" Click="btnCancel_Click"/>
+        </StackPanel>
+
+        <!-- ScrollViewer above the buttons -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="15">
+            <StackPanel>
+                <TextBlock Text="Dodavanje novog taga" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                <!-- Basic information -->
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Name:" Width="120"/>
+                    <TextBox x:Name="txtName" Width="250"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Description:" Width="120"/>
+                    <TextBox x:Name="txtDescription" Width="250"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="IO Address:" Width="120"/>
+                    <TextBox x:Name="txtIOAddress" Width="250"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Type:" Width="120"/>
+                    <ComboBox x:Name="cmbTagType" Width="250" SelectionChanged="cmbTagType_SelectionChanged">
+                        <ComboBoxItem Content="DI"/>
+                        <ComboBoxItem Content="DO"/>
+                        <ComboBoxItem Content="AI"/>
+                        <ComboBoxItem Content="AO"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Dinamička polja -->
+                <StackPanel x:Name="panelInputProps" Visibility="Collapsed" Margin="0,15,0,0">
+                    <TextBlock Text="Parameters for Input tags" FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Scan time:" Width="120"/>
+                        <TextBox x:Name="txtScanTime" Width="100"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="On/Off scan:" Width="120"/>
+                        <CheckBox x:Name="chkOnOffScan"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel x:Name="panelAnalogProps" Visibility="Collapsed" Margin="0,15,0,0">
+                    <TextBlock Text="Parameters for Analog tags" FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Low limit:" Width="120"/>
+                        <TextBox x:Name="txtLowLimit" Width="100"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="High limit:" Width="120"/>
+                        <TextBox x:Name="txtHighLimit" Width="100"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Units:" Width="120"/>
+                        <TextBox x:Name="txtUnits" Width="100"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel x:Name="panelOutputProps" Visibility="Collapsed" Margin="0,15,0,0">
+                    <TextBlock Text="Parameters for Output tags" FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Initial value:" Width="120"/>
+                        <TextBox x:Name="txtInitialValue" Width="100"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>

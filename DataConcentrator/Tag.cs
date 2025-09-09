@@ -68,29 +68,7 @@ namespace DataConcentrator
         }
 
 
-        public void AddProperty(TagProperty key, object value)
-        {
-
-            if (key == TagProperty.scantime || key == TagProperty.onoffscan)
-            {
-                if (Type == TagType.DO || Type == TagType.AO)
-                    throw new Exception($"{key} is allowed only for input tags (DI, AI).");
-            }
-
-            if (key == TagProperty.lowlimit || key == TagProperty.highlimit || key == TagProperty.units)
-            {
-                if (Type == TagType.DO || Type == TagType.DI)
-                    throw new Exception($"{key} is allowed only for analog tags (AI, AO).");
-            }
-
-            if (key == TagProperty.initialvalue)
-            {
-                if (Type == TagType.DI || Type == TagType.AI)
-                    throw new Exception($"{key} is allowed only for output tags (DO, AO).");
-            }
-
-            ExtraProperties[key] = value;
-        }
+        
 
 
 
@@ -117,7 +95,7 @@ namespace DataConcentrator
             }
             else
             {
-                Console.WriteLine("Cant write to Input Type Tags");
+                Console.WriteLine("Cant write to Input Type Tags"); 
             }
         }
 
@@ -125,6 +103,8 @@ namespace DataConcentrator
         {
             if (Type == TagType.AI)
             {
+                if (Alarms == null)
+                    Alarms = new List<Alarm>();
                 Alarms.Add(alarm);
             }
         }
@@ -132,6 +112,30 @@ namespace DataConcentrator
         public void removeAlarm(Alarm alarm)
         {
             Alarms.Remove(alarm);
+        }
+
+
+        public void AddProperty(TagProperty key, object value)
+        {
+            if (key == TagProperty.scantime || key == TagProperty.onoffscan)
+            {
+                if (Type == TagType.DO || Type == TagType.AO)
+                    throw new Exception($"{key} is allowed only for input tags (DI, AI).");
+            }
+
+            if (key == TagProperty.lowlimit || key == TagProperty.highlimit || key == TagProperty.units)
+            {
+                if (Type == TagType.DO || Type == TagType.DI)
+                    throw new Exception($"{key} is allowed only for analog tags (AI, AO).");
+            }
+
+            if (key == TagProperty.initialvalue)
+            {
+                if (Type == TagType.DI || Type == TagType.AI)
+                    throw new Exception($"{key} is allowed only for output tags (DO, AO).");
+            }
+
+            ExtraProperties[key] = value;
         }
 
         public override string ToString()
