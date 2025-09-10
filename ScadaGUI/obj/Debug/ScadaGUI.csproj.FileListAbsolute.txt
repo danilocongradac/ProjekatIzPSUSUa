@@ -92,3 +92,7 @@ C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\bin\Debug\Syst
 C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\bin\Debug\System.ValueTuple.xml
 C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\ScadaGUI.csproj.Up2Date
+C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\AddTagWindow.baml
+C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\TagDetailsWindow.baml
+C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\AddTagWindow.g.cs
+C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\TagDetailsWindow.g.cs

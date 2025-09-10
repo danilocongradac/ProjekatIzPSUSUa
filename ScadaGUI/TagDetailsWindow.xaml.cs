@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Linq;
+using System.Linq.Expressions;
 
 
 namespace ScadaGUI
@@ -15,6 +16,7 @@ namespace ScadaGUI
     public partial class TagDetailsWindow : Window
     {
         private Tag selectedTag;
+        private Alarm selectedAlarm;
 
         public TagDetailsWindow(Tag tag)
         {
@@ -210,29 +212,110 @@ namespace ScadaGUI
                 AlarmType type = (AlarmType)Enum.Parse(typeof(AlarmType), ((ComboBoxItem)cbAlarmType.SelectedItem).Content.ToString());
                 string message = txtAlarmMessage.Text;
 
-                Alarm alarm = new Alarm(limit, type, message)
-                {
-                    TagId = selectedTag.Id
-                };
+
 
                 using (var db = new ContextClass())
                 {
-                    db.Alarms.Add(alarm);
-                    db.SaveChanges();
+                    if (selectedAlarm == null)
+                    {
+                        Alarm alarm = new Alarm(limit, type, message)
+                        {
+                            TagId = selectedTag.Id
+                        };
+
+                        db.Alarms.Add(alarm);
+                        db.SaveChanges();
+
+                        selectedTag.Alarms.Add(alarm);
+                        lstAlarms.Items.Add(alarm.ToString());
+                        MessageBox.Show("Alarm Added succesfully!");
+                    }
+                    else
+                    {
+                        var alarmToUpdate = db.Alarms.FirstOrDefault(a => a.Id == selectedAlarm.Id);
+                        if (alarmToUpdate != null)
+                        {
+                            alarmToUpdate.Limit = limit;
+                            alarmToUpdate.Type = type;
+                            alarmToUpdate.Message = message;
+
+                            db.SaveChanges();
+
+                            selectedAlarm.Limit = limit;
+                            selectedAlarm.Type = type;
+                            selectedAlarm.Message = message;
+
+                            int index = lstAlarms.Items.IndexOf(lstAlarms.SelectedItem);
+                            lstAlarms.Items[index] = selectedAlarm.ToString();
+
+                            MessageBox.Show("Alarm successfully changed!");
+                        }
+                    }
                 }
 
-                // Add a list for GUI
-                if (selectedTag.Alarms == null)
-                    selectedTag.Alarms = new List<Alarm>();
-
-                selectedTag.Alarms.Add(alarm);
-                lstAlarms.Items.Add(alarm.ToString());
-
-                MessageBox.Show("Alarm successfully added!");
+                txtAlarmLimit.Clear();
+                txtAlarmMessage.Clear();
+                cbAlarmType.SelectedIndex = -1;
+                lstAlarms.SelectedItem = null;
+                selectedAlarm = null;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void btnDeleteAlarm_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedAlarm == null)
+            {
+                MessageBox.Show("No alarm selected!");
+                return;
+            }
+
+            try
+            {
+                using (var db = new ContextClass())
+                {
+                    var alarmToDelete = db.Alarms.FirstOrDefault(a => a.Id == selectedAlarm.Id);
+                    if (alarmToDelete != null)
+                    {
+                        db.Alarms.Remove(alarmToDelete);
+                        db.SaveChanges();
+                    }
+                }
+
+                selectedTag.Alarms.Remove(selectedAlarm);
+                lstAlarms.Items.Remove(lstAlarms.SelectedItem);
+
+
+                MessageBox.Show("Alarm deleted!");
+                selectedAlarm = null;
+
+                txtAlarmLimit.Clear();
+                txtAlarmMessage.Clear();
+                cbAlarmType.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error here: " + ex); 
+            }
+        }
+
+    private void lstAlarms_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lstAlarms.SelectedItem == null) return;
+
+            string selectedText = lstAlarms.SelectedItem.ToString();
+            selectedAlarm = selectedTag.Alarms.FirstOrDefault(a => a.ToString() == selectedText);
+
+            if (selectedAlarm != null)
+            {
+                txtAlarmLimit.Text = selectedAlarm.Limit.ToString();
+                cbAlarmType.SelectedItem = cbAlarmType.Items
+                    .Cast<ComboBoxItem>()
+                    .FirstOrDefault(i => i.Content.ToString() == selectedAlarm.Type.ToString());
+                txtAlarmMessage.Text = selectedAlarm.Message;
             }
         }
 
