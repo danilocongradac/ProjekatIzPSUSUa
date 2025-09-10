@@ -26,6 +26,11 @@ namespace DataConcentrator
                 .WithRequired(a => a.Tag)
                 .HasForeignKey(a => a.TagId)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ActivatedAlarm>()
+                .HasRequired(a => a.Alarm)
+                .WithMany()
+                .WillCascadeOnDelete(false);
             base.OnModelCreating(modelBuilder);
         }
     }

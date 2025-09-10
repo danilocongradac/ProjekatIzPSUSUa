@@ -1,6 +1,8 @@
 ﻿
 ﻿using DataConcentrator;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 
@@ -10,12 +12,23 @@ namespace ScadaGUI
     public partial class MainWindow : Window
     {
         private Tag selectedTag;
+        private ObservableCollection<Tag> tags = new ObservableCollection<Tag>();
+        private ObservableCollection<ActivatedAlarm> activeAlarms = new ObservableCollection<ActivatedAlarm>();
+        private DataConcentrator.DataConcentrator concentrator;
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeDataBase();
             LoadTagsFromDatabase();
+            LoadAlarmsFromDatabase();
+
+            concentrator = new DataConcentrator.DataConcentrator();
+            concentrator.AlarmOccurred += onAlarmOccurred;
+            concentrator.ValueChanged += onValueChanged;
+
+            dgLogs.ItemsSource = activeAlarms;
+            dgTags.ItemsSource = tags;
         }
 
         private void InitializeDataBase()
@@ -39,7 +52,24 @@ namespace ScadaGUI
                                   t.Type == TagType.AI ? 2 : 3)
                     .ToList();
 
-                dgTags.ItemsSource = sortedTags;
+
+                tags.Clear();
+                foreach (var tag in sortedTags)
+                {
+                    tags.Add(tag);
+                }
+            }
+        }
+
+        private void LoadAlarmsFromDatabase()
+        {
+            using (var db = new ContextClass())
+            {
+                var sortedAlarms = db.ActivatedAlarms.ToList()
+                    .OrderBy(a => a.Timestamp);
+
+                activeAlarms = new ObservableCollection<ActivatedAlarm>(sortedAlarms);
+                dgLogs.ItemsSource = activeAlarms;
             }
         }
 
@@ -97,5 +127,75 @@ namespace ScadaGUI
    
             LoadTagsFromDatabase();
         }
+
+
+        private void onAlarmOccurred(object sender, ActivatedAlarm e)
+        {
+            if (!activeAlarms.Contains(e))
+            {
+                activeAlarms.Add(e);
+            }
+            dgLogs.ItemsSource = activeAlarms;
+        }
+
+        private void onValueChanged(object sender, EventArgs args)
+        {
+            LoadTagsFromDatabase();
+            dgTags.Items.Refresh();
+        }
+
+        private void btnTestAlarm_Click(object sender, RoutedEventArgs e)
+        {
+            using (var db = new ContextClass())
+            {
+                var tag = db.Tags.Include("Alarms").FirstOrDefault();
+                if (tag == null)
+                {
+                    MessageBox.Show("Nema tagova u bazi!");
+                    return;
+                }
+
+                var alarm = tag.Alarms.FirstOrDefault();
+                if (alarm == null)
+                {
+                    MessageBox.Show("Nema alarma za izabrani tag!");
+                    return;
+                }
+
+                double testValue = alarm.Type == AlarmType.Above
+                    ? alarm.Limit + 10
+                    : alarm.Limit - 10;
+
+                concentrator.UpdateTagValue(tag, testValue);
+                MessageBox.Show($"Test vrednost {testValue} poslata za tag {tag.Name}");
+            }
+        }
+
+        private void btnAckAlarm_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as FrameworkElement;
+            if (button?.DataContext is ActivatedAlarm alarmToAck)
+            {
+                try
+                {
+                    using (var db = new ContextClass())
+                    {
+                        var alarm = db.ActivatedAlarms.Find(alarmToAck.Id);
+                        if (alarm != null)
+                        {
+                            db.ActivatedAlarms.Remove(alarm);
+                            db.SaveChanges();
+                        }
+                    }
+
+                    activeAlarms.Remove(alarmToAck);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Greška pri brisanju alarma: {ex.Message}");
+                }
+            }
+        }
+
     }
 }
