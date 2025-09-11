@@ -1,6 +1,7 @@
 ﻿
 ﻿using DataConcentrator;
 using System;
+using PLCSimulator;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace ScadaGUI
         private Tag selectedTag;
         private ObservableCollection<Tag> tags = new ObservableCollection<Tag>();
         private ObservableCollection<ActivatedAlarm> activeAlarms = new ObservableCollection<ActivatedAlarm>();
-        private DataConcentrator.DataConcentrator concentrator;
+        public static DataConcentrator.DataConcentrator concentrator;
+        private PLC plcWindow;
 
         public MainWindow()
         {
@@ -29,6 +31,11 @@ namespace ScadaGUI
 
             dgLogs.ItemsSource = activeAlarms;
             dgTags.ItemsSource = tags;
+
+            plcWindow = new PLC();
+            plcWindow.Show();
+
+            InitialWriteToPLC();
         }
 
         private void InitializeDataBase()
@@ -46,7 +53,8 @@ namespace ScadaGUI
             {
 
                 // sort: DI, DO, AI, AO
-                var sortedTags = db.Tags.ToList()
+                var sortedTags = db.Tags
+                    .AsNoTracking()
                     .OrderBy(t => t.Type == TagType.DI ? 0 :
                                   t.Type == TagType.DO ? 1 :
                                   t.Type == TagType.AI ? 2 : 3)
@@ -61,11 +69,32 @@ namespace ScadaGUI
             }
         }
 
+        private void InitialWriteToPLC()
+        {
+            using (var db = new ContextClass())
+            {
+                var sortedTags = db.Tags
+                    .AsNoTracking()
+                    .ToList();
+
+                foreach (var tag in sortedTags)
+                {
+                    if (tag.Type == TagType.DO || tag.Type == TagType.AO)
+                    {
+                        concentrator.ForceTagValue(tag, tag.Value);
+                    }
+
+                }
+            }
+
+        }
+
         private void LoadAlarmsFromDatabase()
         {
             using (var db = new ContextClass())
             {
                 var sortedAlarms = db.ActivatedAlarms.ToList()
+                    .Where(a => a.Active)
                     .OrderBy(a => a.Timestamp);
 
                 activeAlarms = new ObservableCollection<ActivatedAlarm>(sortedAlarms);
@@ -131,17 +160,18 @@ namespace ScadaGUI
 
         private void onAlarmOccurred(object sender, ActivatedAlarm e)
         {
-            if (!activeAlarms.Contains(e))
-            {
+            Application.Current.Dispatcher.Invoke(() => {
                 activeAlarms.Add(e);
-            }
-            dgLogs.ItemsSource = activeAlarms;
+            });
         }
 
         private void onValueChanged(object sender, EventArgs args)
         {
-            LoadTagsFromDatabase();
-            dgTags.Items.Refresh();
+            Application.Current.Dispatcher.Invoke(() => {
+                LoadTagsFromDatabase();
+                dgTags.ItemsSource = null;
+                dgTags.ItemsSource = tags;
+            });
         }
 
         private void btnTestAlarm_Click(object sender, RoutedEventArgs e)
@@ -183,16 +213,16 @@ namespace ScadaGUI
                         var alarm = db.ActivatedAlarms.Find(alarmToAck.Id);
                         if (alarm != null)
                         {
-                            db.ActivatedAlarms.Remove(alarm);
+                            alarm.Active = false;
                             db.SaveChanges();
                         }
                     }
 
-                    activeAlarms.Remove(alarmToAck);
+                    LoadAlarmsFromDatabase();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Greška pri brisanju alarma: {ex.Message}");
+                    MessageBox.Show($"Error when acknowledging alarm: {ex.Message}");
                 }
             }
         }

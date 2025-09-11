@@ -62,3 +62,5 @@ C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\bin\De
 C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\bin\Debug\System.ValueTuple.xml
 C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\obj\Debug\DataConc.AF26BFFF.Up2Date
+C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\bin\Debug\PLCSimulator.dll
+C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\DataConcentrator\bin\Debug\PLCSimulator.pdb

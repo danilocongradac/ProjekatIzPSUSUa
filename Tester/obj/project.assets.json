@@ -4,11 +4,23 @@
     "net8.0": {
       "DataConcentrator/1.0.0": {
         "type": "project",
+        "dependencies": {
+          "PLCSimulator": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/DataConcentrator.dll": {}
         },
         "runtime": {
           "bin/placeholder/DataConcentrator.dll": {}
+        }
+      },
+      "PLCSimulator/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/PLCSimulator.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PLCSimulator.dll": {}
         }
       }
     }
@@ -18,6 +30,11 @@
       "type": "project",
       "path": "../DataConcentrator/DataConcentrator.csproj",
       "msbuildProject": "../DataConcentrator/DataConcentrator.csproj"
+    },
+    "PLCSimulator/1.0.0": {
+      "type": "project",
+      "path": "../PLCSimulator/PLCSimulator.csproj",
+      "msbuildProject": "../PLCSimulator/PLCSimulator.csproj"
     }
   },
   "projectFileDependencyGroups": {

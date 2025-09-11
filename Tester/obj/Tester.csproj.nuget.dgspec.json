@@ -12,6 +12,26 @@
         "UsingMicrosoftNETSdk": false,
         "frameworks": {
           "net472": {
+            "projectReferences": {
+              "C:\\Users\\Danilo\\Documents\\GitHub\\ProjekatIzPSUSUa\\PLCSimulator\\PLCSimulator.csproj": {
+                "projectPath": "C:\\Users\\Danilo\\Documents\\GitHub\\ProjekatIzPSUSUa\\PLCSimulator\\PLCSimulator.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {}
+      }
+    },
+    "C:\\Users\\Danilo\\Documents\\GitHub\\ProjekatIzPSUSUa\\PLCSimulator\\PLCSimulator.csproj": {
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Danilo\\Documents\\GitHub\\ProjekatIzPSUSUa\\PLCSimulator\\PLCSimulator.csproj",
+        "projectName": "PLCSimulator",
+        "projectPath": "C:\\Users\\Danilo\\Documents\\GitHub\\ProjekatIzPSUSUa\\PLCSimulator\\PLCSimulator.csproj",
+        "UsingMicrosoftNETSdk": false,
+        "frameworks": {
+          "net472": {
             "projectReferences": {}
           }
         }

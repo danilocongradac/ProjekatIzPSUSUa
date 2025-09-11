@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PLCSimulator;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -11,12 +12,18 @@ namespace DataConcentrator
     {
         public event EventHandler<ActivatedAlarm> AlarmOccurred;
         public event EventHandler ValueChanged;
+        public static PLCSimulatorManager PLC;
+
+
+        public DataConcentrator()
+        {
+            PLC = new PLCSimulatorManager();
+        }
 
         public void UpdateTagValue(Tag tag, object newValue)
         {
-            tag.Value = Convert.ToDouble(newValue);
+            tag.Value = Convert.ToDouble(PLC.GetValue(tag.IOAddress));
 
-            ValueChanged?.Invoke(this, EventArgs.Empty);
 
             using (var db = new ContextClass())
             {
@@ -24,11 +31,12 @@ namespace DataConcentrator
                 db.SaveChanges();
             }
 
+            ValueChanged?.Invoke(this, EventArgs.Empty);
             
             foreach (var alarm in tag.Alarms)
             {
-                if ((alarm.Type == AlarmType.Above && (double)newValue > alarm.Limit) ||
-                    (alarm.Type == AlarmType.Below && (double)newValue < alarm.Limit))
+                if ((alarm.Type == AlarmType.Above && (double)tag.Value > alarm.Limit) ||
+                    (alarm.Type == AlarmType.Below && (double)tag.Value < alarm.Limit))
                 {
 
                     var activated = new ActivatedAlarm
@@ -39,13 +47,14 @@ namespace DataConcentrator
                         Type = Convert.ToString(alarm.Type),
                         Limit = alarm.Limit,
                         Value = tag.Value,
-                        Message = alarm.Message
+                        Message = alarm.Message,
+                        Active = true
                     };
 
                     using (var db = new ContextClass())
                     {
                         bool alreadyActive = db.ActivatedAlarms
-                            .Any(a => a.AlarmId == alarm.Id && a.TagName == tag.Name);
+                            .Any(a => a.AlarmId == alarm.Id && a.TagName == tag.Name && a.Active);
 
                         if (!alreadyActive)
                         {
@@ -58,6 +67,31 @@ namespace DataConcentrator
                     AlarmOccurred?.Invoke(this, activated);
                 }
             }
+        }
+
+        public void ForceTagValue(Tag tag, object newValue)
+        {
+            PLC.SetValue(tag.IOAddress, Convert.ToDouble(newValue));
+            tag.Value = Convert.ToDouble(newValue);
+
+            using (var db = new ContextClass())
+            {
+                db.Tags.AddOrUpdate(tag);
+                db.SaveChanges();
+            }
+
+            ValueChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void addTag(Tag tag)
+        {
+            using (var db = new ContextClass())
+            {
+                db.Tags.AddOrUpdate(tag);
+                db.SaveChanges();
+            }
+
+            ValueChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

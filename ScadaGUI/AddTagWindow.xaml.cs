@@ -81,11 +81,11 @@ namespace ScadaGUI
                         }
                         else
                         {
-                            newTag.Value = Convert.ToDouble(txtInitialValue.Text);
+                            MainWindow.concentrator.ForceTagValue(newTag, Convert.ToDouble(txtInitialValue.Text));
                         }
                     }
 
-
+                    MainWindow.concentrator.addTag(newTag);
                 }
 
                 // save to db
