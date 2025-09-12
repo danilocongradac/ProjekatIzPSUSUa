@@ -33,15 +33,15 @@
             <TextBlock Text="Active Alarms / Logs" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
             <DataGrid x:Name="dgLogs" AutoGenerateColumns="False" Height="200" CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Tip" Binding="{Binding Type}" Width="*"/>
+                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="*"/>
                     <DataGridTextColumn Header="Tag" Binding="{Binding TagName}" Width="*"/>
-                    <DataGridTextColumn Header="Vrednost" Binding="{Binding Value}" Width="*"/>
+                    <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*"/>
                     <DataGridTextColumn Header="Limit" Binding="{Binding Limit}" Width="*"/>
-                    <DataGridTextColumn Header="Poruka" Binding="{Binding Message}" Width="4*"/>
-                    <DataGridTextColumn Header="Vreme" Binding="{Binding Timestamp}" Width="*"/>
+                    <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="4*"/>
+                    <DataGridTextColumn Header="Time" Binding="{Binding Timestamp}" Width="*"/>
 
-                    <!-- Ovde ide akcija -->
-                    <DataGridTemplateColumn Header="Akcija" Width="*">
+                    <!-- Action -->
+                    <DataGridTemplateColumn Header="Action" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Content="Ack"

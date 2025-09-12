@@ -68,10 +68,6 @@ namespace DataConcentrator
         }
 
 
-        
-
-
-
         public void EnableScan()
         {
             if (!(bool)ExtraProperties[TagProperty.onoffscan])

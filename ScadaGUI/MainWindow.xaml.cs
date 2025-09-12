@@ -5,6 +5,7 @@ using PLCSimulator;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 
 
@@ -17,6 +18,7 @@ namespace ScadaGUI
         private ObservableCollection<ActivatedAlarm> activeAlarms = new ObservableCollection<ActivatedAlarm>();
         public static DataConcentrator.DataConcentrator concentrator;
         private PLC plcWindow;
+        private static Dictionary<int, Thread> scanThreadovi = new Dictionary<int, Thread>();
 
         public MainWindow()
         {
@@ -35,7 +37,8 @@ namespace ScadaGUI
             plcWindow = new PLC();
             plcWindow.Show();
 
-            InitialWriteToPLC();
+            InitializeOutputs();
+            InitializeInputs();
         }
 
         private void InitializeDataBase()
@@ -69,7 +72,7 @@ namespace ScadaGUI
             }
         }
 
-        private void InitialWriteToPLC()
+        private void InitializeOutputs()
         {
             using (var db = new ContextClass())
             {
@@ -87,6 +90,57 @@ namespace ScadaGUI
                 }
             }
 
+        }
+
+        private void InitializeInputs()
+        {
+            using (var db = new ContextClass())
+            {
+                var sortedTags = db.Tags
+                    .AsNoTracking()
+                    .ToList();
+
+                foreach (var tag in sortedTags)
+                {
+                    if (tag.Type == TagType.DI || tag.Type == TagType.AI)
+                    {
+                        if (Convert.ToString(tag.ExtraProperties[DataConcentrator.TagProperty.onoffscan]) == "True")
+                        {
+
+                            ScanInputOn(tag);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void ScanInputOn(Tag tag)
+        {
+            int scanTime = (int)Convert.ToDouble(Convert.ToString(tag.ExtraProperties[DataConcentrator.TagProperty.scantime]));
+            Thread t = new Thread(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(scanTime);
+                    concentrator.ReadTagValue(tag);
+                }
+            });
+
+            if (!scanThreadovi.ContainsKey(tag.Id))
+            {
+                scanThreadovi.Add(tag.Id, t);
+                t.Start();
+            }
+        }
+
+        public static void ScanInputOff(Tag tag)
+        {
+            if (scanThreadovi.ContainsKey(tag.Id))
+            {
+                Thread t = scanThreadovi[tag.Id];
+                t.Abort();
+                scanThreadovi.Remove(tag.Id);
+            }
         }
 
         private void LoadAlarmsFromDatabase()
@@ -174,32 +228,6 @@ namespace ScadaGUI
             });
         }
 
-        private void btnTestAlarm_Click(object sender, RoutedEventArgs e)
-        {
-            using (var db = new ContextClass())
-            {
-                var tag = db.Tags.Include("Alarms").FirstOrDefault();
-                if (tag == null)
-                {
-                    MessageBox.Show("Nema tagova u bazi!");
-                    return;
-                }
-
-                var alarm = tag.Alarms.FirstOrDefault();
-                if (alarm == null)
-                {
-                    MessageBox.Show("Nema alarma za izabrani tag!");
-                    return;
-                }
-
-                double testValue = alarm.Type == AlarmType.Above
-                    ? alarm.Limit + 10
-                    : alarm.Limit - 10;
-
-                concentrator.UpdateTagValue(tag, testValue);
-                MessageBox.Show($"Test vrednost {testValue} poslata za tag {tag.Name}");
-            }
-        }
 
         private void btnAckAlarm_Click(object sender, RoutedEventArgs e)
         {

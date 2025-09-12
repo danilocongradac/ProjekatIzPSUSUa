@@ -84,10 +84,10 @@ namespace PLCSimulator
 
                 lock (locker)
                 {
-                    addressValues["ADDR009"] = addressValues["ADDR009"] == 1 ? 0 : 1; // Naizmenicno paljenje i gasenje
-                    addressValues["ADDR010"] = RandomNumberBetween(0, 50) >= 10 ? 1 : 0; // Random paljenje i gasenje
-                    addressValues["ADDR011"] = DateTime.Now.Minute % 3 == 0 ? 0 : 1; // Svaki treci minut upaljen, inace ugasen
-                    addressValues["ADDR012"] = (DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 16) ? 1 : 0; // radno vreme
+                    addressValues["ADDR009"] = addressValues["ADDR009"] == 1 ? 0 : 1; // Alternately on and off 
+                    addressValues["ADDR010"] = RandomNumberBetween(0, 50) >= 10 ? 1 : 0; // Random on and off
+                    addressValues["ADDR011"] = DateTime.Now.Minute % 3 == 0 ? 0 : 1; // Every third minute on, else off 
+                    addressValues["ADDR012"] = (DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 16) ? 1 : 0; // working hours
                 }
             }
         }
@@ -117,7 +117,7 @@ namespace PLCSimulator
                 }
                 else
                 {
-                    throw new Exception("Ne radi ovde");
+                    throw new Exception("Doesn't work here");
                 }
             }
         }

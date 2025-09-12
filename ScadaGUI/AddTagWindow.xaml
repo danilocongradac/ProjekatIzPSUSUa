@@ -12,7 +12,7 @@
         <!-- ScrollViewer above the buttons -->
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="15">
             <StackPanel>
-                <TextBlock Text="Dodavanje novog taga" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                <TextBlock Text="Adding new Tag" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
 
                 <!-- Basic information -->
                 <StackPanel Orientation="Horizontal" Margin="0,5">
@@ -40,7 +40,7 @@
                     </ComboBox>
                 </StackPanel>
 
-                <!-- Dinamička polja -->
+                <!-- Dynamic cells -->
                 <StackPanel x:Name="panelInputProps" Visibility="Collapsed" Margin="0,15,0,0">
                     <TextBlock Text="Parameters for Input tags" FontWeight="Bold"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5">

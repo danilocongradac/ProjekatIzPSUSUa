@@ -98,3 +98,5 @@ C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\AddTagWindo
 C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\TagDetailsWindow.g.cs
 C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\PLC.baml
 C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\PLC.g.cs
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\PLC.baml
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\ScadaGUI\obj\Debug\PLC.g.cs

@@ -4,3 +4,9 @@ C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\PLCSimulator\obj\Debug\PLCSimu
 C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\PLCSimulator\obj\Debug\PLCSimulator.csproj.CoreCompileInputs.cache
 C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\PLCSimulator\obj\Debug\PLCSimulator.dll
 C:\Users\Danilo\Documents\GitHub\ProjekatIzPSUSUa\PLCSimulator\obj\Debug\PLCSimulator.pdb
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\PLCSimulator\obj\Debug\PLCSimulator.csproj.AssemblyReference.cache
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\PLCSimulator\obj\Debug\PLCSimulator.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\PLCSimulator\obj\Debug\PLCSimulator.dll
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\PLCSimulator\obj\Debug\PLCSimulator.pdb
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\PLCSimulator\bin\Debug\PLCSimulator.dll
+C:\Users\Administrator\Documents\GitHub\ProjekatIzPSUSUa\PLCSimulator\bin\Debug\PLCSimulator.pdb

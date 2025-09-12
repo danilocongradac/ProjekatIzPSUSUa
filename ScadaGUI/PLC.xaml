@@ -18,7 +18,7 @@
             <Button x:Name="btnStop" Content="Stop" Width="80" Margin="5" Click="btnStop_Click"/>
         </StackPanel>
 
-        <!-- Tabel with address and values-->
+        <!-- Table with address and values-->
         <DataGrid x:Name="dgValues" Grid.Row="1"
                   AutoGenerateColumns="False"
                   IsReadOnly="True">

@@ -146,6 +146,13 @@ namespace ScadaGUI
             }
 
             updateTagInDB(selectedTag);
+
+            MainWindow.ScanInputOff(selectedTag);
+            if (chkOnOffScan.IsChecked == true)
+            {
+                MainWindow.ScanInputOn(selectedTag);
+            }
+
         }
 
         // Event handler for checkbox
@@ -154,6 +161,15 @@ namespace ScadaGUI
             if (selectedTag == null) return;
             selectedTag.AddProperty(DataConcentrator.TagProperty.onoffscan, chkOnOffScan.IsChecked == true);
             updateTagInDB(selectedTag);
+            if (chkOnOffScan.IsChecked == true)
+            {
+                MainWindow.ScanInputOn(selectedTag);
+            }
+            else
+            {
+                MainWindow.ScanInputOff(selectedTag);
+            }
+
         }
 
 
