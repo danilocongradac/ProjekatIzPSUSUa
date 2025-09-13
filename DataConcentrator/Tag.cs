@@ -49,6 +49,20 @@ namespace DataConcentrator
                 : JsonSerializer.Deserialize<Dictionary<TagProperty, object>>(value);
         }
 
+        [NotMapped]
+        public string DisplayValue
+        {
+            get
+            {
+                string unit = "";
+                if (ExtraProperties != null && ExtraProperties.ContainsKey(TagProperty.units))
+                {
+                    unit = ExtraProperties[TagProperty.units]?.ToString();
+                }
+
+                return $"{Value} {unit}".Trim();
+            }
+        }
 
         public Tag() { }
         public Tag(string name, string description, string ioAddress, TagType type)
