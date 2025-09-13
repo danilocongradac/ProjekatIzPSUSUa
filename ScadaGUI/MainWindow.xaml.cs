@@ -52,22 +52,41 @@ namespace ScadaGUI
 
         private void LoadTagsFromDatabase()
         {
+            int? selectedTagId = null;
+            int selectedIndex = -1;
+
+            if (dgTags.SelectedItem is Tag selected)
+            {
+                selectedTagId = selected.Id;
+                selectedIndex = dgTags.SelectedIndex;
+            }
+
             using (var db = new ContextClass())
             {
-
-                // sort: DI, DO, AI, AO
                 var sortedTags = db.Tags
                     .AsNoTracking()
                     .OrderBy(t => t.Type == TagType.DI ? 0 :
                                   t.Type == TagType.DO ? 1 :
                                   t.Type == TagType.AI ? 2 : 3)
+                    .ThenBy(t => t.Name)
                     .ToList();
-
 
                 tags.Clear();
                 foreach (var tag in sortedTags)
-                {
                     tags.Add(tag);
+            }
+
+            if (selectedTagId.HasValue)
+            {
+                var restoredTag = tags.FirstOrDefault(t => t.Id == selectedTagId.Value);
+                if (restoredTag != null)
+                {
+                    dgTags.SelectedItem = restoredTag;
+                }
+                if (selectedIndex >= 0 && selectedIndex < dgTags.Items.Count)
+                {
+                    dgTags.SelectedIndex = selectedIndex;
+                    dgTags.ScrollIntoView(dgTags.Items[selectedIndex]);
                 }
             }
         }
@@ -186,13 +205,36 @@ namespace ScadaGUI
                
                 using (var db = new ContextClass())
                 {
-                    db.Tags.Attach(selectedTag);
-                    db.Tags.Remove(selectedTag);
-                    db.SaveChanges();
+                    // Get tag and all alarms
+                    var tagToDelete = db.Tags
+                                        .Include("Alarms")
+                                        .FirstOrDefault(t => t.Id == selectedTag.Id);
+
+                    if (tagToDelete != null)
+                    {
+                        // get list id of alarms
+                        var alarmIds = tagToDelete.Alarms.Select(al => al.Id).ToList();
+
+                        // delete all alarms
+                        var activatedToDelete = db.ActivatedAlarms
+                            .Where(a => alarmIds.Contains(a.AlarmId));
+
+                        db.ActivatedAlarms.RemoveRange(activatedToDelete);
+
+                        // delete
+                        db.Alarms.RemoveRange(tagToDelete.Alarms);
+
+                        // delete tag
+                        db.Tags.Remove(tagToDelete);
+
+                        db.SaveChanges();
+                    }
                 }
 
                 LoadTagsFromDatabase();
                 selectedTag = null;
+
+                MessageBox.Show("Tag deleted");
             }
             catch (Exception ex)
             {
@@ -223,8 +265,6 @@ namespace ScadaGUI
         {
             Application.Current.Dispatcher.Invoke(() => {
                 LoadTagsFromDatabase();
-                dgTags.ItemsSource = null;
-                dgTags.ItemsSource = tags;
             });
         }
 

@@ -295,12 +295,19 @@ namespace ScadaGUI
             {
                 using (var db = new ContextClass())
                 {
+                    db.ActivatedAlarms.RemoveRange(
+                        db.ActivatedAlarms.Where(a => a.AlarmId == selectedAlarm.Id)
+                    );
+
                     var alarmToDelete = db.Alarms.FirstOrDefault(a => a.Id == selectedAlarm.Id);
+
                     if (alarmToDelete != null)
                     {
                         db.Alarms.Remove(alarmToDelete);
-                        db.SaveChanges();
+                        
                     }
+
+                    db.SaveChanges();
                 }
 
                 selectedTag.Alarms.Remove(selectedAlarm);

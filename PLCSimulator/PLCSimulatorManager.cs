@@ -68,10 +68,10 @@ namespace PLCSimulator
 
                 lock (locker)
                 {
-                    addressValues["ADDR001"] = 100 * Math.Sin((double)DateTime.Now.Second / 60 * Math.PI); //SINE
-                    addressValues["ADDR002"] = 100 * DateTime.Now.Second / 60; //RAMP
-                    addressValues["ADDR003"] = 50 * Math.Cos((double)DateTime.Now.Second / 60 * Math.PI); //COS
-                    addressValues["ADDR004"] = RandomNumberBetween(0, 50);  //rand
+                    addressValues["ADDR001"] = Math.Round(100 * Math.Sin((double)DateTime.Now.Second / 60 * Math.PI), 3); // SINE
+                    addressValues["ADDR002"] = Math.Round(100 * (double)DateTime.Now.Second / 60, 3); // RAMP
+                    addressValues["ADDR003"] = Math.Round(50 * Math.Cos((double)DateTime.Now.Second / 60 * Math.PI), 3); // COS
+                    addressValues["ADDR004"] = Math.Round(RandomNumberBetween(0, 50), 3);  // RAND
                 }
             }
         }

@@ -84,16 +84,9 @@ namespace ScadaGUI
                             MainWindow.concentrator.ForceTagValue(newTag, Convert.ToDouble(txtInitialValue.Text));
                         }
                     }
-
-                    MainWindow.concentrator.addTag(newTag);
                 }
 
-                // save to db
-                using (var db = new ContextClass())
-                {
-                    db.Tags.Add(newTag);
-                    db.SaveChanges();
-                }
+                MainWindow.concentrator.addTag(newTag);
 
                 this.DialogResult = true;
                 this.Close();

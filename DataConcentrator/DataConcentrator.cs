@@ -27,45 +27,50 @@ namespace DataConcentrator
 
             using (var db = new ContextClass())
             {
-                db.Tags.AddOrUpdate(tag);
-                db.SaveChanges();
-            }
+                var selectedTag = db.Tags
+                    .Include("Alarms")
+                    .FirstOrDefault(t => t.Id == tag.Id);
 
-            ValueChanged?.Invoke(this, EventArgs.Empty);
-
-            if (tag.Alarms != null)
-            {
-                foreach (var alarm in tag.Alarms)
+                if (selectedTag != null)
                 {
+                    selectedTag.Value = tag.Value;
 
-                    if ((alarm.Type == AlarmType.Above && (double)tag.Value > alarm.Limit) ||
-                        (alarm.Type == AlarmType.Below && (double)tag.Value < alarm.Limit))
+                    db.Tags.AddOrUpdate(selectedTag);
+                    db.SaveChanges();
+
+                    ValueChanged?.Invoke(this, EventArgs.Empty);
+
+                    if (selectedTag.Alarms != null)
                     {
-                        var activated = new ActivatedAlarm
+                        foreach (var alarm in selectedTag.Alarms)
                         {
-                            AlarmId = alarm.Id,
-                            TagName = tag.Name,
-                            Timestamp = DateTime.Now,
-                            Type = Convert.ToString(alarm.Type),
-                            Limit = alarm.Limit,
-                            Value = tag.Value,
-                            Message = alarm.Message,
-                            Active = true
-                        };
-                        using (var db = new ContextClass())
-                        {
-                            bool alreadyActive = db.ActivatedAlarms
-                               .Any(a => a.AlarmId == alarm.Id && a.TagName == tag.Name && a.Active);
-
-                            if (!alreadyActive)
+                            if ((alarm.Type == AlarmType.Above && selectedTag.Value > alarm.Limit) ||
+                                (alarm.Type == AlarmType.Below && selectedTag.Value < alarm.Limit))
                             {
-                                db.ActivatedAlarms.Add(activated);
-                                db.SaveChanges();
-                                AlarmOccurred?.Invoke(this, activated);
+                                var activated = new ActivatedAlarm
+                                {
+                                    AlarmId = alarm.Id,
+                                    TagName = selectedTag.Name,
+                                    Timestamp = DateTime.Now,
+                                    Type = Convert.ToString(alarm.Type),
+                                    Limit = alarm.Limit,
+                                    Value = selectedTag.Value,
+                                    Message = alarm.Message,
+                                    Active = true
+                                };
+
+                                bool alreadyActive = db.ActivatedAlarms
+                                    .Any(a => a.AlarmId == alarm.Id && a.TagName == selectedTag.Name && a.Active);
+
+                                if (!alreadyActive)
+                                {
+                                    db.ActivatedAlarms.Add(activated);
+                                    db.SaveChanges();
+                                    AlarmOccurred?.Invoke(this, activated);
+                                }
                             }
                         }
                     }
-
                 }
             }
         }
