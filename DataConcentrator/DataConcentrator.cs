@@ -3,8 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DataConcentrator
 {
@@ -13,13 +16,26 @@ namespace DataConcentrator
         public event EventHandler<ActivatedAlarm> AlarmOccurred;
         public event EventHandler ValueChanged;
         public static PLCSimulatorManager PLC;
+        public List<ReportObject> reportList {  get; set; }
+
+        public class ReportObject
+        {
+            public Tag tag { get; set; }
+            public DateTime timestamp { get; set; }
 
 
+            public override string ToString()
+            {
+                return $"{tag} : {timestamp}";
+            }
+        }
         public DataConcentrator()
         {
             PLC = new PLCSimulatorManager();
+            reportList = new List<ReportObject>();
         }
 
+        
         public void ReadTagValue(Tag tag)
         {
             tag.Value = Convert.ToDouble(PLC.GetValue(tag.IOAddress));
@@ -39,6 +55,7 @@ namespace DataConcentrator
                     db.SaveChanges();
 
                     ValueChanged?.Invoke(this, EventArgs.Empty);
+
 
                     if (selectedTag.Alarms != null)
                     {
@@ -70,6 +87,36 @@ namespace DataConcentrator
                                 }
                             }
                         }
+                    }
+
+                    try
+                    {
+
+                        var lowEl = (JsonElement)selectedTag.ExtraProperties[TagProperty.lowlimit];
+                        var highEl = (JsonElement)selectedTag.ExtraProperties[TagProperty.highlimit];
+
+                        double low = lowEl.ValueKind == JsonValueKind.Number ? lowEl.GetDouble()
+                                                                             : double.Parse(lowEl.GetString());
+                        double high = highEl.ValueKind == JsonValueKind.Number ? highEl.GetDouble()
+                                                                               : double.Parse(highEl.GetString());
+
+                        double reportLow = (low + high) / 2 - 5;
+                        double reportHigh = (low + high) / 2 + 5;
+
+
+                        if (selectedTag.Value > reportLow && selectedTag.Value < reportHigh)
+                        {
+
+                            ReportObject ro = new ReportObject();
+                            ro.timestamp = DateTime.Now;
+                            ro.tag = selectedTag;
+                            reportList.Add(ro);
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Stopped here" + ex);
                     }
                 }
             }

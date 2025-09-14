@@ -161,8 +161,7 @@ namespace DataConcentrator
                 props = props.Substring(0, props.Length - 2);
             }
 
-            return $"{Name} ({Type}) - {Description}, I/O: {IOAddress}, Value: {Value}" +
-                   (props != "" ? $", Properties: {props}" : "");
+            return $"{Name} ({Type}) - {Description}, I/O: {IOAddress}, Value: {Value}";
         }
 
 

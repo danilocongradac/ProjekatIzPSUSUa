@@ -1,12 +1,14 @@
 ﻿
 ﻿using DataConcentrator;
-using System;
 using PLCSimulator;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Markup;
 
 
 namespace ScadaGUI
@@ -295,5 +297,26 @@ namespace ScadaGUI
             }
         }
 
+        private void btnReport_Click(object sender, RoutedEventArgs e)
+        {
+            
+            try
+            {
+                using (StreamWriter writer = new StreamWriter("../../../report.txt", false)) 
+                {
+                    writer.WriteLine($"Report  ---- {DateTime.Now}");
+                    writer.WriteLine($"Number or reports: {concentrator.reportList.Count}");
+                    foreach (var item in concentrator.reportList)
+                    {
+                        writer.WriteLine(item);
+                    }
+                }
+                MessageBox.Show("Report Done");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error in report: {ex.Message}");
+            }
+        }
     }
 }
