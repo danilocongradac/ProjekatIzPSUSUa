@@ -53,17 +53,29 @@ namespace ScadaGUI
                 if (newTag.Type == TagType.DI || newTag.Type == TagType.AI)
                 {
                     if (!string.IsNullOrWhiteSpace(txtScanTime.Text))
-                        newTag.ExtraProperties[DataConcentrator.TagProperty.scantime] = int.Parse(txtScanTime.Text);
+                        if (int.Parse(txtScanTime.Text) < 0)
+                        {
+                            MessageBox.Show("Scan time cant be negative! Scan time set to positive!");
+                        }
+                        newTag.ExtraProperties[DataConcentrator.TagProperty.scantime] = Math.Abs(int.Parse(txtScanTime.Text));
+                        
                     newTag.ExtraProperties[DataConcentrator.TagProperty.onoffscan] = chkOnOffScan.IsChecked == true;
                 }
 
                 // Extra props for analog tags
                 if (newTag.Type == TagType.AI)
                 {
+
+                    
                     if (!string.IsNullOrWhiteSpace(txtLowLimit.Text))
                         newTag.ExtraProperties[DataConcentrator.TagProperty.lowlimit] = double.Parse(txtLowLimit.Text);
                     if (!string.IsNullOrWhiteSpace(txtHighLimit.Text))
                         newTag.ExtraProperties[DataConcentrator.TagProperty.highlimit] = double.Parse(txtHighLimit.Text);
+                    if(int.Parse(txtLowLimit.Text) > int.Parse(txtHighLimit.Text))
+                    {
+                        MessageBox.Show("Low limit cant be higher then high limit");
+                
+                    }
                     newTag.ExtraProperties[DataConcentrator.TagProperty.units] = txtUnits.Text;
                 }
 

@@ -261,6 +261,8 @@ namespace ScadaGUI
             Application.Current.Dispatcher.Invoke(() => {
                 activeAlarms.Add(e);
             });
+
+            int tagId = e.Alarm.TagId;
         }
 
         private void onValueChanged(object sender, EventArgs args)

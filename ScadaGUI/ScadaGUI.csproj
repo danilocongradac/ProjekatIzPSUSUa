@@ -7,7 +7,6 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E6C18285-8FF8-4C84-8FDD-2BB92D74B554}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <OutputType>Exe</OutputType>
     <RootNamespace>ScadaGUI</RootNamespace>
     <AssemblyName>ScadaGUI</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
